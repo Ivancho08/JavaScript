@@ -1,4 +1,4 @@
-function passwordVerification(password) {
+const passwordVerification = () => {
   if (password.length >= 8) {
     if (
       /[A-Z]/.test(password) &&
@@ -17,7 +17,7 @@ function passwordVerification(password) {
     alert("La contraseña no contiene los carácteres suficientes");
     return false;
   }
-}
+};
 
 let password;
 let check = false;
