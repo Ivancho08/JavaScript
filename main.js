@@ -25,7 +25,7 @@ User.prototype.passwordVerification = (password) => {
   }
 };
 
-let user = new User(Iván);
+let user = new User();
 
 let password;
 let check = false;
