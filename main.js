@@ -24,6 +24,10 @@ User.prototype.passwordVerification = function (password) {
   }
 };
 
+User.prototype.searchPassword = function (password) {
+  return this.correctPasswords.includes(password);
+};
+
 let user = new User();
 
 let password;
@@ -34,4 +38,13 @@ do {
   check = user.passwordVerification(password);
 } while (!password || !check);
 
-console.log(user.correctPasswords);
+console.log(user.correctPasswords); //Este punto solo lo utilizo para ver si se guardo correctamente la contraseña
+
+let searchPassword = prompt("Ingrese una contraseña a buscar: ");
+let found = user.searchPassword(searchPassword);
+
+if (found) {
+  alert("La contraseña fue encontrada.");
+} else {
+  alert("La contraseña no existe.");
+}
