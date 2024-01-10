@@ -2,7 +2,7 @@ function User() {
   this.correctPasswords = [];
 }
 
-User.prototype.passwordVerification = (password) => {
+User.prototype.passwordVerification = function (password) {
   if (password.length >= 8) {
     if (
       /[A-Z]/.test(password) &&
