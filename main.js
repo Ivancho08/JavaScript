@@ -1,5 +1,4 @@
-function User(userName) {
-  this.userName = userName;
+function User() {
   this.correctPasswords = [];
 }
 
