@@ -1,4 +1,9 @@
-const passwordVerification = () => {
+function User(userName) {
+  this.userName = userName;
+  this.correctPasswords = [];
+}
+
+User.prototype.passwordVerification = (password) => {
   if (password.length >= 8) {
     if (
       /[A-Z]/.test(password) &&
@@ -6,6 +11,7 @@ const passwordVerification = () => {
       /[0-9]/.test(password)
     ) {
       alert("La contraseña ingresada es una contraseña válida");
+      this.correctPasswords.push(password);
       return true;
     } else {
       alert(
@@ -19,10 +25,14 @@ const passwordVerification = () => {
   }
 };
 
+let user = new User(Iván);
+
 let password;
 let check = false;
 
 do {
   password = prompt("Ingrese una contraseña para validar: ");
-  check = passwordVerification(password);
+  check = user.passwordVerification(password);
 } while (!password || !check);
+
+console.log(user.correctPasswords);
