@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
   function User() {
-    this.correctPasswords = [];
+    this.correctPasswords =
+      JSON.parse(localStorage.getItem("correctPasswords")) || [];
   }
 
   User.prototype.passwordVerification = function (password) {
@@ -11,6 +12,10 @@ document.addEventListener("DOMContentLoaded", function () {
         /[0-9]/.test(password)
       ) {
         this.correctPasswords.push(password);
+        localStorage.setItem(
+          "correctPasswords",
+          JSON.stringify(this.correctPasswords)
+        );
         return true;
       } else {
         return false;
@@ -34,10 +39,10 @@ document.addEventListener("DOMContentLoaded", function () {
     let isValid = user.passwordVerification(password);
 
     if (isValid) {
-      resultContainer.innerHTML = "Contraseña Valida. Guardada correctamente. ";
+      resultContainer.innerHTML = "Contraseña Válida. Guardada correctamente.";
     } else {
       resultContainer.innerHTML =
-        "La contraseña no cumple con los requisitos necesarios. ";
+        "La contraseña no cumple con los requisitos necesarios.";
     }
   }
 
