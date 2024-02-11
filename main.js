@@ -41,13 +41,17 @@ document.addEventListener("DOMContentLoaded", function () {
   User.prototype.savePasswordsToJson = async function () {
     try {
       const jsonContent = JSON.stringify(this.correctPasswords);
-      await fetch("http://localhost:3000/passwords", {
+      const response = await fetch("http://localhost:3000/passwords", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: jsonContent,
       });
+
+      if (!response.ok) {
+        throw new Error("Error saving passwords to JSON");
+      }
     } catch (error) {
       console.error("Error saving passwords to JSON:", error);
     }

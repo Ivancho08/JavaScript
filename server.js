@@ -1,10 +1,12 @@
 const express = require("express");
+const cors = require("cors");
 const app = express();
 const fs = require("fs").promises;
 
 const PORT = 3000;
 
 app.use(express.json());
+app.use(cors());
 
 app.put("/passwords", async (req, res) => {
   try {
