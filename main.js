@@ -1,6 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const sha256 = require("js-sha256");
-
   function User() {
     this.jsonFilePath = "password.json";
     this.correctPasswords = [];
