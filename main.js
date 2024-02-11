@@ -1,32 +1,64 @@
 document.addEventListener("DOMContentLoaded", function () {
+  const sha256 = require("js-sha256");
+
   function User() {
-    this.correctPasswords =
-      JSON.parse(localStorage.getItem("correctPasswords")) || [];
+    this.jsonFilePath = "password.json";
+    this.correctPasswords = [];
+
+    this.loadPasswordsFromJson = async () => {
+      try {
+        const response = await fetch(this.jsonFilePath);
+        if (response.ok) {
+          const passwords = await response.json();
+          this.correctPasswords = passwords;
+        }
+      } catch (error) {
+        console.error("Error loading passwords from JSON:", error);
+      }
+    };
+
+    this.loadPasswordsFromJson();
   }
 
   User.prototype.passwordVerification = function (password) {
-    if (password.length >= 8) {
+    return new Promise((resolve, reject) => {
       if (
+        password.length >= 8 &&
         /[A-Z]/.test(password) &&
         /[a-z]/.test(password) &&
         /[0-9]/.test(password)
       ) {
-        this.correctPasswords.push(password);
-        localStorage.setItem(
-          "correctPasswords",
-          JSON.stringify(this.correctPasswords)
-        );
-        return true;
+        const hashedPassword = sha256(password);
+
+        this.correctPasswords.push(hashedPassword);
+        this.savePasswordsToJson().then(() => {
+          resolve("Contraseña Válida. Guardada correctamente.");
+        });
       } else {
-        return false;
+        reject("La contraseña no cumple con los requisitos necesarios.");
       }
-    } else {
-      return false;
+    });
+  };
+
+  User.prototype.savePasswordsToJson = async function () {
+    try {
+      const jsonContent = JSON.stringify(this.correctPasswords);
+      await fetch("http://localhost:3000/passwords", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: jsonContent,
+      });
+    } catch (error) {
+      console.error("Error saving passwords to JSON:", error);
     }
   };
 
   User.prototype.searchPassword = function (password) {
-    return this.correctPasswords.includes(password);
+    const hashedPassword = sha256(password);
+
+    return this.correctPasswords.includes(hashedPassword);
   };
 
   let user = new User();
@@ -36,14 +68,15 @@ document.addEventListener("DOMContentLoaded", function () {
     let resultContainer = document.getElementById("resultContainer");
 
     let password = passwordInput.value;
-    let isValid = user.passwordVerification(password);
 
-    if (isValid) {
-      resultContainer.innerHTML = "Contraseña Válida. Guardada correctamente.";
-    } else {
-      resultContainer.innerHTML =
-        "La contraseña no cumple con los requisitos necesarios.";
-    }
+    user
+      .passwordVerification(password)
+      .then((message) => {
+        resultContainer.innerHTML = message;
+      })
+      .catch((error) => {
+        resultContainer.innerHTML = error;
+      });
   }
 
   let buttonVerification = document.getElementById("buttonVerification");
